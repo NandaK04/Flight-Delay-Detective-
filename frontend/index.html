@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flight Delay Detective</title>
+  <style>
+    /* ── Reset & base ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1f2328;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 32px 16px 64px;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    .card {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 32px 36px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    .header { margin-bottom: 28px; }
+    .header h1 { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .header p  { color: #57606a; font-size: 13px; margin-top: 4px; }
+
+    /* ── Section labels ─────────────────────────────────────────────────── */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #57606a;
+      margin: 22px 0 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* ── Form grid ──────────────────────────────────────────────────────── */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+    .full { grid-column: 1 / -1; }
+
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #444d56;
+    }
+    .field .hint { font-size: 11px; color: #57606a; margin-top: 1px; }
+    .field input, .field select {
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      font-size: 13.5px;
+      color: #1f2328;
+      background: #ffffff;
+      transition: border-color 0.15s;
+      appearance: none;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: #3b82d4;
+      box-shadow: 0 0 0 3px rgba(59,130,212,0.12);
+    }
+    .field input.error, .field select.error {
+      border-color: #f43f5e;
+    }
+    .field .err-msg {
+      font-size: 11px;
+      color: #f43f5e;
+      display: none;
+    }
+    .field .err-msg.visible { display: block; }
+
+    /* ── Submit button ──────────────────────────────────────────────────── */
+    .btn-wrap { margin-top: 26px; }
+    #submit-btn {
+      width: 100%;
+      height: 44px;
+      background: #3b82d4;
+      color: #ffffff;
+      font-size: 14.5px;
+      font-weight: 600;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    #submit-btn:hover:not(:disabled) { background: #2563c0; }
+    #submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    /* ── Result panel ───────────────────────────────────────────────────── */
+    #result {
+      display: none;
+      margin-top: 28px;
+      border-radius: 8px;
+      padding: 20px 22px;
+      border: 1px solid transparent;
+    }
+    #result.delayed {
+      background: #fff1f2;
+      border-color: #fda4af;
+    }
+    #result.not-delayed {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .result-verdict {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .verdict-icon { font-size: 26px; line-height: 1; }
+
+    .prob-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0;
+      font-size: 13.5px;
+    }
+    .prob-label { width: 160px; color: #444d56; font-weight: 600; }
+    .prob-bar-track {
+      flex: 1;
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .fill-delayed     { background: #f43f5e; }
+    .fill-not-delayed { background: #22c55e; }
+    .prob-pct {
+      width: 50px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+
+    .result-model {
+      margin-top: 14px;
+      font-size: 11.5px;
+      color: #57606a;
+    }
+
+    /* ── Error banner ───────────────────────────────────────────────────── */
+    #error-banner {
+      display: none;
+      margin-top: 18px;
+      background: #fff1f2;
+      border: 1px solid #fda4af;
+      border-radius: 7px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #9f1239;
+    }
+
+    /* ── Spinner ────────────────────────────────────────────────────────── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Analyst panel ──────────────────────────────────────────────────── */
+    #analyst-wrap {
+      display: none;
+      margin-top: 14px;
+    }
+    #analyse-btn {
+      width: 100%;
+      height: 40px;
+      background: #ffffff;
+      color: #3b82d4;
+      font-size: 13.5px;
+      font-weight: 600;
+      border: 1.5px solid #3b82d4;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #analyse-btn:hover:not(:disabled) { background: #eff6ff; }
+    #analyse-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    #analyst-panel {
+      display: none;
+      margin-top: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 18px 20px;
+      background: #f7f8fa;
+    }
+    .analyst-section { margin-bottom: 16px; }
+    .analyst-section:last-child { margin-bottom: 0; }
+    .analyst-heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #57606a;
+      margin-bottom: 7px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .analyst-verdict {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2328;
+      line-height: 1.5;
+    }
+    .risk-item {
+      margin-bottom: 10px;
+      padding: 9px 12px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .risk-label {
+      font-weight: 700;
+      color: #444d56;
+      margin-bottom: 2px;
+    }
+    .risk-stat {
+      color: #1f2328;
+      margin-bottom: 2px;
+    }
+    .risk-note { color: #57606a; font-size: 12px; }
+    .risk-source {
+      color: #9aa4b0;
+      font-size: 11px;
+      margin-top: 3px;
+      font-style: italic;
+    }
+    .context-item {
+      font-size: 13px;
+      color: #444d56;
+      margin-bottom: 5px;
+      padding-left: 12px;
+      border-left: 2px solid #d0d7de;
+    }
+    .model-note {
+      font-size: 12px;
+      color: #57606a;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 5px;
+      padding: 8px 12px;
+    }
+    .grounding-note {
+      font-size: 11px;
+      color: #9aa4b0;
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 22px 18px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>&#9992;&#65039; Flight Delay Detective</h1>
+    <p>Enter scheduled flight details to predict whether the flight will arrive 15+ minutes late.</p>
+  </div>
+
+  <form id="predict-form" novalidate>
+
+    <!-- ── Route & Carrier ──────────────────────────────────────────────── -->
+    <div class="section-title">Route &amp; Carrier</div>
+    <div class="grid">
+
+      <div class="field">
+        <label for="carrier">Carrier Code</label>
+        <input id="carrier" type="text" placeholder="e.g. AA" maxlength="4" autocomplete="off" />
+        <span class="hint">IATA airline code</span>
+        <span class="err-msg" id="carrier-err">Required</span>
+      </div>
+
+      <div class="field">
+        <label for="origin">Origin Airport</label>
+        <input id="origin" type="text" placeholder="e.g. DFW" maxlength="4" autocomplete="off" />
+        <span class="hint">IATA airport code</span>
+        <span class="err-msg" id="origin-err">Required</span>
+      </div>
+
+      <div class="field">
+        <label for="dest">Destination Airport</label>
+        <input id="dest" type="text" placeholder="e.g. ORD" maxlength="4" autocomplete="off" />
+        <span class="hint">IATA airport code</span>
+        <span class="err-msg" id="dest-err">Required</span>
+      </div>
+
+      <div class="field">
+        <label for="distance">Route Distance (miles)</label>
+        <input id="distance" type="number" placeholder="e.g. 802" min="1" step="1" />
+        <span class="err-msg" id="distance-err">Must be a positive number</span>
+      </div>
+
+    </div>
+
+    <!-- ── Schedule ──────────────────────────────────────────────────────── -->
+    <div class="section-title">Schedule</div>
+    <div class="grid">
+
+      <div class="field">
+        <label for="dep-time">Scheduled Departure</label>
+        <input id="dep-time" type="time" value="17:00" />
+        <span class="hint">Local departure time</span>
+        <span class="err-msg" id="dep-time-err">Required</span>
+      </div>
+
+      <div class="field">
+        <label for="arr-time">Scheduled Arrival</label>
+        <input id="arr-time" type="time" value="20:00" />
+        <span class="hint">Local arrival time</span>
+        <span class="err-msg" id="arr-time-err">Required</span>
+      </div>
+
+      <div class="field">
+        <label for="elapsed">Scheduled Duration (min)</label>
+        <input id="elapsed" type="number" placeholder="e.g. 100" min="1" step="1" />
+        <span class="err-msg" id="elapsed-err">Must be a positive number</span>
+      </div>
+
+    </div>
+
+    <!-- ── Date ──────────────────────────────────────────────────────────── -->
+    <div class="section-title">Travel Date</div>
+    <div class="grid">
+
+      <div class="field">
+        <label for="travel-date">Flight Date</label>
+        <input id="travel-date" type="date" />
+        <span class="hint">Selects month, day, day-of-week automatically</span>
+        <span class="err-msg" id="date-err">Required</span>
+      </div>
+
+    </div>
+
+    <!-- ── Submit ─────────────────────────────────────────────────────────── -->
+    <div class="btn-wrap">
+      <button type="submit" id="submit-btn">
+        <span id="btn-label">Predict Flight Delay</span>
+      </button>
+    </div>
+
+  </form>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="result-verdict">
+      <span class="verdict-icon" id="verdict-icon"></span>
+      <span id="verdict-text"></span>
+    </div>
+
+    <div class="prob-row">
+      <span class="prob-label">Delayed (&ge;15 min)</span>
+      <div class="prob-bar-track">
+        <div class="prob-bar-fill fill-delayed" id="bar-delayed" style="width:0%"></div>
+      </div>
+      <span class="prob-pct" id="pct-delayed"></span>
+    </div>
+
+    <div class="prob-row">
+      <span class="prob-label">Not Delayed</span>
+      <div class="prob-bar-track">
+        <div class="prob-bar-fill fill-not-delayed" id="bar-not-delayed" style="width:0%"></div>
+      </div>
+      <span class="prob-pct" id="pct-not-delayed"></span>
+    </div>
+
+    <div class="result-model" id="result-model"></div>
+  </div>
+
+  <!-- Analyst -->
+  <div id="analyst-wrap">
+    <button id="analyse-btn">&#129302; Analyse this flight</button>
+    <div id="analyst-panel">
+      <div class="analyst-section">
+        <div class="analyst-heading">Verdict</div>
+        <div class="analyst-verdict" id="analyst-verdict"></div>
+      </div>
+      <div class="analyst-section">
+        <div class="analyst-heading">Risk Factors (from computed EDA data)</div>
+        <div id="analyst-risks"></div>
+      </div>
+      <div class="analyst-section">
+        <div class="analyst-heading">Dataset Context (2024 flights)</div>
+        <div id="analyst-context"></div>
+      </div>
+      <div class="analyst-section">
+        <div class="analyst-heading">Model Performance</div>
+        <div class="model-note" id="analyst-model-note"></div>
+      </div>
+      <div class="grounding-note" id="analyst-sources"></div>
+    </div>
+  </div>
+
+  <!-- Error banner -->
+  <div id="error-banner"></div>
+
+</div><!-- /card -->
+
+<script>
+  // ── API URL — change if backend runs on a different port ──────────────────
+  const API_BASE = "http://127.0.0.1:8000";
+
+  // ── Set today as default date ─────────────────────────────────────────────
+  (function setDefaultDate() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2,"0");
+    document.getElementById("travel-date").value =
+      `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  })();
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function showErr(id, msg) {
+    const el = document.getElementById(id + "-err");
+    const inp = document.getElementById(id);
+    if (el) { el.textContent = msg; el.classList.add("visible"); }
+    if (inp) inp.classList.add("error");
+  }
+  function clearErr(id) {
+    const el = document.getElementById(id + "-err");
+    const inp = document.getElementById(id);
+    if (el) el.classList.remove("visible");
+    if (inp) inp.classList.remove("error");
+  }
+  function clearAllErrors() {
+    ["carrier","origin","dest","distance","dep-time","arr-time","elapsed","travel-date"]
+      .forEach(clearErr);
+    document.getElementById("error-banner").style.display = "none";
+  }
+
+  function timeToHour(timeStr) {
+    // "HH:MM" -> integer hour 0-23
+    if (!timeStr) return null;
+    return parseInt(timeStr.split(":")[0], 10);
+  }
+
+  // ── Validate + collect form values ────────────────────────────────────────
+  function collectInputs() {
+    clearAllErrors();
+    let ok = true;
+
+    const carrier  = document.getElementById("carrier").value.trim().toUpperCase();
+    const origin   = document.getElementById("origin").value.trim().toUpperCase();
+    const dest     = document.getElementById("dest").value.trim().toUpperCase();
+    const distVal  = document.getElementById("distance").value;
+    const depTime  = document.getElementById("dep-time").value;
+    const arrTime  = document.getElementById("arr-time").value;
+    const elapsed  = document.getElementById("elapsed").value;
+    const dateVal  = document.getElementById("travel-date").value;
+
+    if (!carrier) { showErr("carrier", "Required"); ok = false; }
+    if (!origin)  { showErr("origin",  "Required"); ok = false; }
+    if (!dest)    { showErr("dest",    "Required"); ok = false; }
+
+    const distance = parseFloat(distVal);
+    if (!distVal || isNaN(distance) || distance <= 0)
+      { showErr("distance", "Enter a positive number"); ok = false; }
+
+    if (!depTime) { showErr("dep-time", "Required"); ok = false; }
+    if (!arrTime) { showErr("arr-time", "Required"); ok = false; }
+
+    const elapsedMin = parseFloat(elapsed);
+    if (!elapsed || isNaN(elapsedMin) || elapsedMin <= 0)
+      { showErr("elapsed", "Enter a positive number"); ok = false; }
+
+    if (!dateVal) { showErr("travel-date", "Required"); ok = false; }
+
+    if (!ok) return null;
+
+    const date = new Date(dateVal + "T00:00:00");
+    const month       = date.getMonth() + 1;           // 1-12
+    const day_of_month = date.getDate();               // 1-31
+    // JS getDay(): 0=Sun,1=Mon,...,6=Sat -> convert to 1=Mon..7=Sun
+    const jsDay       = date.getDay();
+    const day_of_week = jsDay === 0 ? 7 : jsDay;      // 1-7
+
+    return {
+      op_unique_carrier: carrier,
+      origin,
+      dest,
+      month,
+      day_of_month,
+      day_of_week,
+      dep_hour: timeToHour(depTime),
+      arr_hour: timeToHour(arrTime),
+      crs_elapsed_time: elapsedMin,
+      distance,
+    };
+  }
+
+  // ── State for analyst ─────────────────────────────────────────────────────
+  let _lastInputs     = null;
+  let _lastPrediction = null;
+
+  // ── Render prediction result ──────────────────────────────────────────────
+  function showResult(data, inputs) {
+    const isDelayed = data.prediction === "delayed";
+    const pDelay    = (data.prob_delayed    * 100).toFixed(1);
+    const pNotDelay = (data.prob_not_delayed * 100).toFixed(1);
+
+    const panel = document.getElementById("result");
+    panel.className = isDelayed ? "delayed" : "not-delayed";
+    panel.style.display = "block";
+
+    document.getElementById("verdict-icon").textContent = isDelayed ? "\u26A0\uFE0F" : "\u2705";
+    document.getElementById("verdict-text").textContent =
+      isDelayed ? "Likely Delayed (15+ min)" : "Likely On Time";
+
+    document.getElementById("bar-delayed").style.width    = pDelay + "%";
+    document.getElementById("bar-not-delayed").style.width = pNotDelay + "%";
+    document.getElementById("pct-delayed").textContent    = pDelay + "%";
+    document.getElementById("pct-not-delayed").textContent = pNotDelay + "%";
+    document.getElementById("result-model").textContent =
+      "Model: " + data.model + " \u2022 Prediction threshold: 50%";
+
+    // Show analyst button; hide old analysis
+    _lastInputs     = inputs;
+    _lastPrediction = data;
+    document.getElementById("analyst-wrap").style.display  = "block";
+    document.getElementById("analyst-panel").style.display = "none";
+    document.getElementById("analyse-btn").disabled = false;
+    document.getElementById("analyse-btn").textContent = "\uD83E\uDD16 Analyse this flight";
+  }
+
+  // ── Render analyst response ───────────────────────────────────────────────
+  function showAnalysis(a) {
+    document.getElementById("analyst-verdict").textContent = a.verdict_sentence;
+
+    const risksEl = document.getElementById("analyst-risks");
+    risksEl.innerHTML = "";
+    (a.risk_factors || []).forEach(rf => {
+      const d = document.createElement("div");
+      d.className = "risk-item";
+      d.innerHTML =
+        `<div class="risk-label">${esc(rf.label)}</div>` +
+        `<div class="risk-stat">${esc(rf.stat)}</div>` +
+        `<div class="risk-note">${esc(rf.note)}</div>` +
+        `<div class="risk-source">Source: ${esc(rf.source)}</div>`;
+      risksEl.appendChild(d);
+    });
+
+    const ctxEl = document.getElementById("analyst-context");
+    ctxEl.innerHTML = "";
+    (a.context || []).forEach(sentence => {
+      const d = document.createElement("div");
+      d.className = "context-item";
+      d.textContent = sentence;
+      ctxEl.appendChild(d);
+    });
+
+    document.getElementById("analyst-model-note").textContent = a.model_note;
+    document.getElementById("analyst-sources").textContent =
+      "Grounded in: " + (a.data_sources || []).join(", ");
+    document.getElementById("analyst-panel").style.display = "block";
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  // ── Form submit ───────────────────────────────────────────────────────────
+  document.getElementById("predict-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const inputs = collectInputs();
+    if (!inputs) return;
+
+    // Show spinner
+    const btn       = document.getElementById("submit-btn");
+    const btnLabel  = document.getElementById("btn-label");
+    btn.disabled    = true;
+    btnLabel.innerHTML = "<div class='spinner'></div> Predicting...";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("error-banner").style.display = "none";
+
+    try {
+      const resp = await fetch(API_BASE + "/predict", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(inputs),
+      });
+
+      if (!resp.ok) {
+        const errBody = await resp.json().catch(() => ({}));
+        throw new Error(errBody.detail || `API error: HTTP ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      showResult(data, inputs);
+
+    } catch (err) {
+      const banner = document.getElementById("error-banner");
+      banner.textContent = "Error: " + err.message +
+        " — Make sure the backend is running on " + API_BASE;
+      banner.style.display = "block";
+    } finally {
+      btn.disabled    = false;
+      btnLabel.textContent = "Predict Flight Delay";
+    }
+  });
+
+  // ── Analyst button ────────────────────────────────────────────────────────
+  document.getElementById("analyse-btn").addEventListener("click", async function() {
+    if (!_lastInputs || !_lastPrediction) return;
+    const btn = document.getElementById("analyse-btn");
+    btn.disabled = true;
+    btn.textContent = "Analysing...";
+
+    try {
+      const resp = await fetch(API_BASE + "/analyse", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ inputs: _lastInputs, prediction: _lastPrediction }),
+      });
+      if (!resp.ok) {
+        const e = await resp.json().catch(() => ({}));
+        throw new Error(e.detail || `HTTP ${resp.status}`);
+      }
+      showAnalysis(await resp.json());
+    } catch (err) {
+      const banner = document.getElementById("error-banner");
+      banner.textContent = "Analysis error: " + err.message;
+      banner.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "\uD83E\uDD16 Analyse this flight";
+    }
+  });
+</script>
+
+</body>
+</html>
