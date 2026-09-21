@@ -262,4 +262,4 @@ pydantic>=2.0
 ## Author
 
 Internship Project — Flight Delay Detective  
-Dataset: [Kaggle Flight Delay Dataset 2024](https://www.kaggle.com/datasets/patrickzel/flight-delay-and-cancellation-dataset-2019-2023)
+Dataset: https://www.kaggle.com/datasets/hrishitpatil/flight-data-2024?utm_source=chatgpt.com
