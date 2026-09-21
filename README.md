@@ -262,4 +262,4 @@ pydantic>=2.0
 ## Author
 
 Internship Project — Flight Delay Detective  
-Dataset: https://www.kaggle.com/datasets/hrishitpatil/flight-data-2024?utm_source=chatgpt.com
+Dataset: https://www.kaggle.com/datasets/hrishitpatil/flight-data-2024
