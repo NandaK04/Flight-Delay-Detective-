@@ -1,0 +1,440 @@
+{
+  "target_distribution": {
+    "total_flights": 348266,
+    "n_delayed": 72499,
+    "n_not_delayed": 275767,
+    "pct_delayed": 20.82
+  },
+  "delay_rate_by_carrier": [
+    {
+      "op_unique_carrier": "F9",
+      "delay_rate": 0.28642047106717067,
+      "flights": 10317,
+      "delay_pct": 28.64
+    },
+    {
+      "op_unique_carrier": "AA",
+      "delay_rate": 0.26102248981027454,
+      "flights": 48333,
+      "delay_pct": 26.1
+    },
+    {
+      "op_unique_carrier": "B6",
+      "delay_rate": 0.2568168470509271,
+      "flights": 11919,
+      "delay_pct": 25.68
+    },
+    {
+      "op_unique_carrier": "NK",
+      "delay_rate": 0.23782815299524812,
+      "flights": 12837,
+      "delay_pct": 23.78
+    },
+    {
+      "op_unique_carrier": "AS",
+      "delay_rate": 0.21930335023692743,
+      "flights": 12029,
+      "delay_pct": 21.93
+    },
+    {
+      "op_unique_carrier": "G4",
+      "delay_rate": 0.21769418321142459,
+      "flights": 5742,
+      "delay_pct": 21.77
+    },
+    {
+      "op_unique_carrier": "OH",
+      "delay_rate": 0.21425349571493008,
+      "flights": 11085,
+      "delay_pct": 21.43
+    },
+    {
+      "op_unique_carrier": "MQ",
+      "delay_rate": 0.20959431018216126,
+      "flights": 13779,
+      "delay_pct": 20.96
+    },
+    {
+      "op_unique_carrier": "WN",
+      "delay_rate": 0.20667324269846035,
+      "flights": 69951,
+      "delay_pct": 20.67
+    },
+    {
+      "op_unique_carrier": "UA",
+      "delay_rate": 0.1992586468972506,
+      "flights": 37499,
+      "delay_pct": 19.93
+    },
+    {
+      "op_unique_carrier": "OO",
+      "delay_rate": 0.18980720779932084,
+      "flights": 36516,
+      "delay_pct": 18.98
+    },
+    {
+      "op_unique_carrier": "DL",
+      "delay_rate": 0.17217998355032196,
+      "flights": 49849,
+      "delay_pct": 17.22
+    },
+    {
+      "op_unique_carrier": "HA",
+      "delay_rate": 0.15406599116653677,
+      "flights": 3849,
+      "delay_pct": 15.41
+    },
+    {
+      "op_unique_carrier": "9E",
+      "delay_rate": 0.15250076710647437,
+      "flights": 9777,
+      "delay_pct": 15.25
+    },
+    {
+      "op_unique_carrier": "YX",
+      "delay_rate": 0.1444805194805195,
+      "flights": 14784,
+      "delay_pct": 14.45
+    }
+  ],
+  "delay_rate_by_month": [
+    {
+      "month": 1,
+      "flights": 26268,
+      "delay_pct": 24.06,
+      "month_label": "Jan"
+    },
+    {
+      "month": 2,
+      "flights": 25764,
+      "delay_pct": 15.92,
+      "month_label": "Feb"
+    },
+    {
+      "month": 3,
+      "flights": 29271,
+      "delay_pct": 20.85,
+      "month_label": "Mar"
+    },
+    {
+      "month": 4,
+      "flights": 28847,
+      "delay_pct": 19.06,
+      "month_label": "Apr"
+    },
+    {
+      "month": 5,
+      "flights": 29962,
+      "delay_pct": 26.41,
+      "month_label": "May"
+    },
+    {
+      "month": 6,
+      "flights": 30063,
+      "delay_pct": 24.94,
+      "month_label": "Jun"
+    },
+    {
+      "month": 7,
+      "flights": 30697,
+      "delay_pct": 29.62,
+      "month_label": "Jul"
+    },
+    {
+      "month": 8,
+      "flights": 30216,
+      "delay_pct": 23.47,
+      "month_label": "Aug"
+    },
+    {
+      "month": 9,
+      "flights": 28913,
+      "delay_pct": 15.51,
+      "month_label": "Sep"
+    },
+    {
+      "month": 10,
+      "flights": 30426,
+      "delay_pct": 13.2,
+      "month_label": "Oct"
+    },
+    {
+      "month": 11,
+      "flights": 28597,
+      "delay_pct": 14.67,
+      "month_label": "Nov"
+    },
+    {
+      "month": 12,
+      "flights": 29242,
+      "delay_pct": 21.15,
+      "month_label": "Dec"
+    }
+  ],
+  "delay_rate_by_dep_hour": [
+    {
+      "dep_hour": 0,
+      "flights": 587,
+      "delay_pct": 20.95
+    },
+    {
+      "dep_hour": 1,
+      "flights": 202,
+      "delay_pct": 22.28
+    },
+    {
+      "dep_hour": 2,
+      "flights": 82,
+      "delay_pct": 21.95
+    },
+    {
+      "dep_hour": 3,
+      "flights": 51,
+      "delay_pct": 13.73
+    },
+    {
+      "dep_hour": 4,
+      "flights": 21,
+      "delay_pct": 28.57
+    },
+    {
+      "dep_hour": 5,
+      "flights": 9771,
+      "delay_pct": 9.63
+    },
+    {
+      "dep_hour": 6,
+      "flights": 24412,
+      "delay_pct": 9.59
+    },
+    {
+      "dep_hour": 7,
+      "flights": 24371,
+      "delay_pct": 12.43
+    },
+    {
+      "dep_hour": 8,
+      "flights": 24015,
+      "delay_pct": 14.12
+    },
+    {
+      "dep_hour": 9,
+      "flights": 19568,
+      "delay_pct": 14.82
+    },
+    {
+      "dep_hour": 10,
+      "flights": 21633,
+      "delay_pct": 16.34
+    },
+    {
+      "dep_hour": 11,
+      "flights": 21963,
+      "delay_pct": 17.89
+    },
+    {
+      "dep_hour": 12,
+      "flights": 20876,
+      "delay_pct": 19.07
+    },
+    {
+      "dep_hour": 13,
+      "flights": 20655,
+      "delay_pct": 21.12
+    },
+    {
+      "dep_hour": 14,
+      "flights": 19984,
+      "delay_pct": 23.42
+    },
+    {
+      "dep_hour": 15,
+      "flights": 20010,
+      "delay_pct": 25.21
+    },
+    {
+      "dep_hour": 16,
+      "flights": 20063,
+      "delay_pct": 26.73
+    },
+    {
+      "dep_hour": 17,
+      "flights": 21689,
+      "delay_pct": 27.54
+    },
+    {
+      "dep_hour": 18,
+      "flights": 21251,
+      "delay_pct": 29.42
+    },
+    {
+      "dep_hour": 19,
+      "flights": 18942,
+      "delay_pct": 30.44
+    },
+    {
+      "dep_hour": 20,
+      "flights": 15457,
+      "delay_pct": 30.59
+    },
+    {
+      "dep_hour": 21,
+      "flights": 11544,
+      "delay_pct": 28.1
+    },
+    {
+      "dep_hour": 22,
+      "flights": 8280,
+      "delay_pct": 26.76
+    },
+    {
+      "dep_hour": 23,
+      "flights": 2839,
+      "delay_pct": 21.94
+    }
+  ],
+  "delay_rate_by_top20_origin": [
+    {
+      "origin": "SLC",
+      "flights": 5598,
+      "delay_pct": 16.74
+    },
+    {
+      "origin": "LGA",
+      "flights": 7904,
+      "delay_pct": 17.98
+    },
+    {
+      "origin": "LAX",
+      "flights": 9421,
+      "delay_pct": 18.52
+    },
+    {
+      "origin": "DTW",
+      "flights": 6546,
+      "delay_pct": 19.03
+    },
+    {
+      "origin": "MSP",
+      "flights": 6218,
+      "delay_pct": 19.06
+    },
+    {
+      "origin": "PHX",
+      "flights": 9706,
+      "delay_pct": 19.27
+    },
+    {
+      "origin": "ATL",
+      "flights": 17022,
+      "delay_pct": 19.79
+    },
+    {
+      "origin": "BOS",
+      "flights": 7170,
+      "delay_pct": 20.06
+    },
+    {
+      "origin": "DCA",
+      "flights": 6818,
+      "delay_pct": 20.36
+    },
+    {
+      "origin": "JFK",
+      "flights": 6036,
+      "delay_pct": 21.11
+    },
+    {
+      "origin": "SEA",
+      "flights": 8096,
+      "delay_pct": 21.2
+    },
+    {
+      "origin": "LAS",
+      "flights": 9238,
+      "delay_pct": 21.53
+    },
+    {
+      "origin": "SFO",
+      "flights": 6803,
+      "delay_pct": 22.18
+    },
+    {
+      "origin": "EWR",
+      "flights": 6277,
+      "delay_pct": 22.24
+    },
+    {
+      "origin": "DEN",
+      "flights": 15292,
+      "delay_pct": 22.76
+    },
+    {
+      "origin": "ORD",
+      "flights": 13673,
+      "delay_pct": 23.75
+    },
+    {
+      "origin": "IAH",
+      "flights": 5728,
+      "delay_pct": 23.92
+    },
+    {
+      "origin": "MCO",
+      "flights": 7849,
+      "delay_pct": 24.88
+    },
+    {
+      "origin": "CLT",
+      "flights": 10580,
+      "delay_pct": 26.61
+    },
+    {
+      "origin": "DFW",
+      "flights": 15529,
+      "delay_pct": 27.41
+    }
+  ],
+  "delay_rate_by_distance_bin": [
+    {
+      "distance_bin": "0\u2013250",
+      "flights": 39873,
+      "delay_pct": 18.95
+    },
+    {
+      "distance_bin": "250\u2013500",
+      "flights": 80039,
+      "delay_pct": 19.83
+    },
+    {
+      "distance_bin": "500\u2013750",
+      "flights": 69468,
+      "delay_pct": 20.62
+    },
+    {
+      "distance_bin": "750\u20131k",
+      "flights": 57625,
+      "delay_pct": 21.61
+    },
+    {
+      "distance_bin": "1k\u20131.5k",
+      "flights": 56380,
+      "delay_pct": 22.47
+    },
+    {
+      "distance_bin": "1.5k\u20132k",
+      "flights": 23293,
+      "delay_pct": 22.49
+    },
+    {
+      "distance_bin": "2k\u20133k",
+      "flights": 20830,
+      "delay_pct": 20.34
+    },
+    {
+      "distance_bin": "3k+",
+      "flights": 758,
+      "delay_pct": 19.53
+    }
+  ]
+}

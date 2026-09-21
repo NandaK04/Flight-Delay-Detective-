@@ -1,0 +1,103 @@
+{
+  "model": "GradientBoostingClassifier",
+  "label": "GBT_deeper_slower",
+  "model_params": {
+    "n_estimators": 300,
+    "max_depth": 6,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "min_samples_leaf": 40,
+    "max_features": "sqrt",
+    "random_state": 42,
+    "verbose": 0
+  },
+  "encoding": {
+    "method": "out_of_fold_target_encoding",
+    "n_folds": 5,
+    "smooth_k": 20,
+    "leakage_safe": true,
+    "oof_applied_to": "training_rows_only",
+    "val_test_uses": "full_train_mapping_no_val_targets",
+    "global_mean_verified": 0.223465
+  },
+  "train_months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "val_months": [
+    10,
+    11
+  ],
+  "test_months": [
+    12
+  ],
+  "train_rows": 260001,
+  "val_rows": 59023,
+  "test_rows": 29242,
+  "train_n_delayed": 58101,
+  "train_n_not_delayed": 201900,
+  "train_pct_delayed": 22.35,
+  "val_n_delayed": 8212,
+  "val_n_not_delayed": 50811,
+  "val_pct_delayed": 13.91,
+  "validation_metrics": {
+    "accuracy_pct": 76.4058,
+    "precision_pct": 22.2082,
+    "recall_pct": 27.8008,
+    "f1_pct": 24.6918,
+    "roc_auc_pct": 62.1276
+  },
+  "confusion_matrix": {
+    "TN": 42814,
+    "FP": 7997,
+    "FN": 5929,
+    "TP": 2283
+  },
+  "feature_importances": {
+    "arr_hour": 0.177624,
+    "dep_hour": 0.175059,
+    "month": 0.156381,
+    "op_unique_carrier": 0.125823,
+    "day_of_month": 0.112799,
+    "dest": 0.068597,
+    "origin": 0.064045,
+    "day_of_week": 0.044859,
+    "distance": 0.037509,
+    "crs_elapsed_time": 0.037305
+  },
+  "feature_cols": [
+    "op_unique_carrier",
+    "origin",
+    "dest",
+    "month",
+    "day_of_month",
+    "day_of_week",
+    "dep_hour",
+    "arr_hour",
+    "crs_elapsed_time",
+    "distance"
+  ],
+  "categorical_features": [
+    "op_unique_carrier",
+    "origin",
+    "dest"
+  ],
+  "numerical_features": [
+    "month",
+    "day_of_month",
+    "day_of_week",
+    "dep_hour",
+    "arr_hour",
+    "crs_elapsed_time",
+    "distance"
+  ],
+  "target_col": "is_delayed",
+  "random_state": 42
+}

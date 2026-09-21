@@ -1,0 +1,40 @@
+{
+  "raw_row_count": 7079081,
+  "valid_row_count": 6965267,
+  "dev_sample_row_count": 348266,
+  "dev_sample_frac": 0.05,
+  "n_delayed": 72499,
+  "n_not_delayed": 275767,
+  "pct_delayed": 20.82,
+  "delay_threshold_min": 15,
+  "missing_after_preprocessing": {},
+  "feature_cols": [
+    "op_unique_carrier",
+    "origin",
+    "dest",
+    "month",
+    "day_of_month",
+    "day_of_week",
+    "dep_hour",
+    "arr_hour",
+    "crs_elapsed_time",
+    "distance"
+  ],
+  "categorical_features": [
+    "op_unique_carrier",
+    "origin",
+    "dest"
+  ],
+  "numerical_features": [
+    "month",
+    "day_of_month",
+    "day_of_week",
+    "dep_hour",
+    "arr_hour",
+    "crs_elapsed_time",
+    "distance"
+  ],
+  "target_col": "is_delayed",
+  "random_state": 42,
+  "chunk_size": 200000
+}
